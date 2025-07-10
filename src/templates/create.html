@@ -29,10 +29,16 @@
           <b>Evil</b>
         {% endif %}
       </label>
-      {% for role in group %}
-        <div class="form-check">
+	{% for role in group %}
+	  <div class="form-check">
           <input type="checkbox" class="form-check-input" id="{{ role }}" name="{{ role }}" {% if selected[role]==True %} checked="checked" {% endif %}>
-          <label for="{{ role }}" class="form-check-label">{{ role }}</label>
+		  <label for="{{ role }}" class="form-check-label">
+			{% if role == "A Lover" %}
+			  Lovers
+			{% else %}
+			  {{ role }}
+			{% endif %}
+		  </label>
         </div>
       {% endfor %}
     </div>

@@ -26,7 +26,6 @@ class Role:
 	morgana = 'Morgana'
 	mordred = 'Mordred'
 	oberon = 'Oberon'
-
 	lover = 'a Lover'
 	
 EVERY_ROLE = {v for k,v in Role.__dict__.items() if not k.startswith('_')}
@@ -277,6 +276,7 @@ def Configuration(form):
 	for r in conf['boxes']:
 		print(f"{r}")
 	print(conf['selected'])
+	print(conf['boxes'])
 	# generate a list of roles
 	conf['complaints'] = []
 
