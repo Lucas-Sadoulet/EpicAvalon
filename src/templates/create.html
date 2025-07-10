@@ -33,10 +33,11 @@
 	  <div class="form-check">
           <input type="checkbox" class="form-check-input" id="{{ role }}" name="{{ role }}" {% if selected[role]==True %} checked="checked" {% endif %}>
 		  <label for="{{ role }}" class="form-check-label">
-			{% if role == "the Lover" %}
+			{% if role == "Lover" %}
 			  the Lovers
 			{% else %}
 			  {{ role }}
+			{% endif %}
 		  </label>
         </div>
       {% endfor %}
