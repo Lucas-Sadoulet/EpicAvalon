@@ -26,7 +26,7 @@ class Role:
 	morgana = 'Morgana'
 	mordred = 'Mordred'
 	oberon = 'Oberon'
-	lover = 'the Lovers'
+	lover = 'the Lover'
 	
 EVERY_ROLE = {v for k,v in Role.__dict__.items() if not k.startswith('_')}
 
@@ -108,14 +108,10 @@ class Room:
 
 	def possibly_make_assignments(self):
 		if self.config and self.full and all(self.assignments[uid] is None for uid in self.uids):
-			if not self.config.get('prank_everyone_is'):
-				for uid, r in zip(shuffled(self.uids),self.config['roles']):
-					self.assignments[uid] = r
-					self.role_lookup[r].add(uid)
-					print(f"Assigned {names[uid]} the role {r}")
-			else:
-				for uid in self.uids:
-					self.assignments[uid] = self.config['prank_everyone_is']
+			for uid, r in zip(shuffled(self.uids),self.config['roles']):
+				self.assignments[uid] = r
+				self.role_lookup[r].add(uid)
+				print(f"Assigned {names[uid]} the role {r}")
 
 
 	@property
@@ -137,13 +133,6 @@ class Room:
 			return 'danger'
 		else:
 			return 'warning'
-
-	def get_prank_targets(self, your_role, valid_fakes, target):
-		fake_people_num = len([role for role in target if
-							   role is not your_role and role in self.config['roles']])
-		shuffle(valid_fakes)
-		people = valid_fakes[0:fake_people_num]
-		return people
 
 	def render(self,uid):
 		if self.full and not (uid in self.uids):
@@ -206,10 +195,6 @@ class Room:
 			people = [names[uid] for uid in
 					  set.union(*[self.role_lookup.get(role, set()) for role in target])
 					  if uid not in (your_uid, None)]
-
-			if self.config.get('prank_everyone_is'):
-				people = self.get_prank_targets(your_role, valid_fakes, target)
-				valid_fakes = list(fake for fake in valid_fakes if fake not in people)
 
 			if people:
 				info['messages'].append({
@@ -280,7 +265,7 @@ def Configuration(form):
 	# generate a list of roles
 	conf['complaints'] = []
 
-	conf['roles'] = [role for role in conf['selected'] if role in form]
+	conf['roles'] = [role for role in conf['selected'] if form.get(role)]
 
 
 	if Role.lover in form:
@@ -312,9 +297,6 @@ def Configuration(form):
 
 		for _ in range(generic):
 			conf['roles'].append(role)
-
-	if form.get('enable_prank_mode') and randint(1, 100) == 1:
-		conf['prank_everyone_is'] = choice(list(set(conf['roles'])))
 
 	return conf
 
