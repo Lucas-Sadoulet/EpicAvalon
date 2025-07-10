@@ -81,8 +81,12 @@
           {%  if role_info.role_name == "spectator" %}
             You are Spectating.
             <hr/>
-          {% else %}
-            You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.role_name }}</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+		  {% else %}
+			{% if role_info.role_name == "the Lovers" %}
+			  You are <b class="text-{{ role_info.role_css_class }}">A Lover</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+			{% else %}
+			  You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.role_name }}</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+			{% endif %}
           {% endif %}
 
         <ul id="info_container"

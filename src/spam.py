@@ -26,7 +26,7 @@ class Role:
 	morgana = 'Morgana'
 	mordred = 'Mordred'
 	oberon = 'Oberon'
-	lover = 'a Lover'
+	lover = 'the Lovers'
 	
 EVERY_ROLE = {v for k,v in Role.__dict__.items() if not k.startswith('_')}
 
@@ -271,7 +271,7 @@ def Configuration(form):
 	conf['num_players'] = int(form['num_players'])
 	conf['num_lancelots'] = int(form.get('num_lancelots', 0))
 
-	conf['selected'] = {r:r in form for r in conf['boxes'] if form.get(r) is True}
+	conf['selected'] = {r:r in form for r in conf['boxes']}
 	print(form)
 	for r in conf['boxes']:
 		print(f"{r}")
