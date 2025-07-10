@@ -19,8 +19,8 @@ class FakePerson:
         r.assignments.setdefault(self.uid)
 
 # - - - - - - - - -
-SL_FORM = {'num_players':11, 'num_lancelots':1,
-                Role.merlin:True, Role.percival:True, Role.assassin:True, Role.morgana:True, Role.mordred:True,
+SL_FORM = {'num_players':7, 'num_lancelots':0,
+                Role.merlin:True, Role.percival:True, Role.lover:True, Role.assassin:True, Role.morgana:False, Role.mordred:False,
         }
 
 # --- build sample room ----
@@ -30,7 +30,7 @@ spam.names['tester'] = 'tester'
 r = spam.Room('tester')
 r.configure(spam.Configuration(SL_FORM))
 spam.rooms['test'] = r
-for _ in range(11):
+for _ in range(5):
     FakePerson().join(r)
 spam.session = backup
 

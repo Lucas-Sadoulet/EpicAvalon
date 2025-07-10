@@ -53,6 +53,30 @@
   {% if role_info.has_role %}
     <div class="row mt-2">
       <div class="col">
+		
+		<div id="role-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255);z-index:10;display:flex;align-items:center;justify-content:center;cursor:pointer; border: 4px solid #333; ">
+			<div>
+				<h4>Tap to reveal your role</h4>
+				<p class="text-muted" style="color:inherit !important">Make sure no one else is looking!</p>
+			</div>
+		</div>
+		<script>
+			let overlayBg1 = 'rgba(255,255,255)';
+			let overlayBg2 = 'rgba(255,255,255,0)';
+			let currentBg = 1;
+
+			const overlay = document.getElementById('role-overlay');
+			overlay.addEventListener('click', function(e) {
+				if (e.target === overlay) {
+					currentBg = currentBg === 1 ? 2 : 1;
+					overlay.style.background = currentBg === 1 ? overlayBg1 : overlayBg2;
+					overlay.style.color = currentBg === 1 ? "#000" : "#fff";
+					verlay.style.color = currentBg === 1 ? "#000" : "#fff";
+				}
+			});
+			
+		</script>
+	  <div style="height: 30vh; padding: 20px">
           <h5>Your role</h5>
           {%  if role_info.role_name == "spectator" %}
             You are Spectating.
@@ -80,6 +104,7 @@
             </li>
           {% endfor %}
         </ul>
+		</div>
       </div>
     </div>
 
