@@ -22,11 +22,13 @@ class Role:
 
 	merlin = 'Merlin'
 	percival = 'Percival'
-	assassin = 'the Assassin'
+	assassin = 'Assassin'
 	morgana = 'Morgana'
 	mordred = 'Mordred'
 	oberon = 'Oberon'
-	lover = 'the Lover'
+	lover = 'Lover'
+	guardian_angel = "Guardian Angel"
+	owain = 'Owain'
 	
 EVERY_ROLE = {v for k,v in Role.__dict__.items() if not k.startswith('_')}
 
@@ -38,8 +40,10 @@ DISPLAY_OVERRIDE = {
 DOUBLE_LANCELOTS = {Role.good_lancelot,Role.evil_lancelot}
 SINGLE_LANCELOTS = {Role.single_lancelot_good,Role.single_lancelot_evil}
 
-GOOD_ALIGNED = {Role.merlin,Role.percival,Role.generic_good, Role.lover}
+GOOD_ALIGNED = {Role.merlin,Role.percival,Role.generic_good, Role.lover, Role.owain, Role.guardian_angel}
 EVIL_GROUP = {Role.assassin, Role.mordred, Role.morgana, Role.generic_evil}
+
+
 EVIL_ALIGNED = {*EVIL_GROUP, Role.oberon}
 
 GOOD_ALIGNED_ALL = {*GOOD_ALIGNED, Role.good_lancelot, Role.single_lancelot_good}
@@ -59,7 +63,7 @@ VISION_MATRIX = (
 	(DOUBLE_LANCELOTS,  DOUBLE_LANCELOTS,             'the other Lancelot', 'warning'),)
 
 DEFAULT_FORM = {'num_players':7, Role.merlin:True, Role.percival:True,
-				Role.assassin:True, Role.morgana:True, Role.mordred:True,}
+				Role.assassin:True, Role.morgana:True, Role.mordred:True}
 EMPTY_FORM = {'num_players':-1}
 
 # ---- helpers ----
@@ -203,11 +207,51 @@ class Room:
 					'people_css_class': people_css_class,
 				})
 
-		if your_role is Role.merlin and Role.mordred in self.config['roles']:
+		
+			
+		else:
+			people = [names[uid] for uid in
+					  set.union(*[self.role_lookup.get(role, set()) for role in target])
+					  if uid not in (your_uid, None)]
+	
+		if your_role is Role.owain:
+			num_visible_evil = sum(1 for role in self.config['roles'] if role in VISIBLE_EVIL)
+			candidates = [names[uid] for uid in
+					  set.union(*[self.role_lookup.get(role, set()) for role in EVERY_ROLE])
+					  if uid not in (your_uid, None)]
+			people = shuffled(candidates)[:num_visible_evil]
+			print(f"Owain sees {people} ({num_visible_evil} {candidates} visible evil)")
+			info['messages'].append({
+					'people': people,
+					'text': "evil",
+					'people_css_class': "danger",
+				})
+		
+		if your_role is Role.guardian_angel:
+			
+			candidates = [names[uid] for uid in
+					  set.union(*[self.role_lookup.get(role, set()) for role in {Role.generic_good}])
+					  if uid not in (your_uid, None)]
+			people = [shuffled(candidates)[0]]
+			print(f"GA sees {people} ( {candidates} )")
+			info['messages'].append({
+					'people': people,
+					'text': "under your protection",
+					'people_css_class': "info",
+				})
+		if (your_role is Role.merlin or your_role is Role.owain) and Role.mordred in self.config['roles']:
 			info['messages'].append({
 				'people': ['Mordred'],
 				'text': 'remains hidden',
 				'people_css_class': 'danger',
+				'custom_message': True,
+			})
+
+		if (your_role is Role.merlin or your_role is Role.owain) and Role.owain in self.config['roles']:
+			info['messages'].append({
+				'people': ['Owain'],
+				'text': ' also exists, or it may be you...',
+				'people_css_class': 'warning',
 				'custom_message': True,
 			})
 		if your_role in EVIL_GROUP-{Role.oberon} and Role.oberon in self.config['roles']:
@@ -218,6 +262,7 @@ class Room:
 				'custom_message': True,
 			})
 
+		
 		return info
 
 	def spectator_info(self):
@@ -247,9 +292,9 @@ def Configuration(form):
 	"""
 	conf = {}
 
-	conf['checkboxes'] = ((Role.merlin,Role.percival,Role.lover),
+	conf['checkboxes'] = ((Role.merlin,Role.percival,Role.owain,Role.guardian_angel,Role.lover),
 						  (Role.assassin,Role.morgana,Role.mordred,Role.oberon))
-
+	print(f"Checkboxes: {conf['checkboxes']}")
 	conf['boxes'] = [r for g in conf['checkboxes'] for r in g]
 
 	# needed by html
@@ -266,9 +311,10 @@ def Configuration(form):
 	conf['complaints'] = []
 
 	conf['roles'] = [role for role in conf['selected'] if form.get(role)]
+	print(conf['roles'])
 
 
-	if Role.lover in form:
+	if Role.lover in conf['roles']:
 		conf['roles'].append(Role.lover)
 
 	if conf['num_lancelots'] == 1:
@@ -284,7 +330,7 @@ def Configuration(form):
 	if conf['num_players'] >= 10:
 		size['evil'] = 4
 
-	size['good'] = conf['num_players'] - size['evil'] - conf['num_lancelots'] - (1 if Role.lover in form else 0)
+	size['good'] = conf['num_players'] - size['evil'] - conf['num_lancelots'] - (1 if Role.lover in conf['roles'] else 0)
 
 	for name,group,role in (('evil',EVIL_ALIGNED,Role.generic_evil),
 							('good',GOOD_ALIGNED,Role.generic_good)):

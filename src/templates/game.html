@@ -70,8 +70,7 @@
 				if (e.target === overlay) {
 					currentBg = currentBg === 1 ? 2 : 1;
 					overlay.style.background = currentBg === 1 ? overlayBg1 : overlayBg2;
-					overlay.style.color = currentBg === 1 ? "#000" : "#fff";
-					verlay.style.color = currentBg === 1 ? "#000" : "#fff";
+					overlay.style.color = currentBg === 1 ? "#000" : "#fff0";
 				}
 			});
 			
@@ -82,9 +81,14 @@
             You are Spectating.
             <hr/>
 		  {% else %}
-			{% if role_info.role_name == "the Lovers" %}
-			  You are <b class="text-{{ role_info.role_css_class }}">A Lover</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
-			{% else %}
+			{% if role_info.role_name == "Lover" %}
+			  You are a <b class="text-{{ role_info.role_css_class }}">Lover</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+			{% elif role_info.role_name == "Assassin" %}
+			  You are the <b class="text-{{ role_info.role_css_class }}">Assassin</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+			{% elif role_info.role_name == "Owain" %}
+			  You are <b class="text-{{ role_info.role_css_class }}">Merlin</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
+			
+	      	{% else %}
 			  You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.role_name }}</b>. You are <b class="text-{{ role_info.role_css_class }}">{{ role_info.original_alignment }}</b>.
 			{% endif %}
           {% endif %}
@@ -112,18 +116,7 @@
       </div>
     </div>
 
-    {%  if role_info.role_name != "spectator" %}
-        <div class="row mt-2">
-          <div class="col mb-4">
-            <h5>Role cards</h5>
-            <button role="button" id="role-card-button" class="btn btn-primary mb-1">Show Role</button>
-            <button role="button" id="alignment-card-button" class="btn btn-primary mb-1">Show Alignment</button>
-            <p>
-              <small class="text-muted">Open these cards when you are Laked and pass your phone to the other player. The card shows the original alignment (for lancelot games).</small>
-            </p>
-          </div>
-        </div>
-    {% endif %}
+    
   {% endif %}
 {%  endblock %}
 

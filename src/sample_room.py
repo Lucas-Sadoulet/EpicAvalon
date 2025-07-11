@@ -20,7 +20,7 @@ class FakePerson:
 
 # - - - - - - - - -
 SL_FORM = {'num_players':6, 'num_lancelots':0,
-                Role.merlin:True, Role.percival:True, Role.lover:True, Role.assassin:True, Role.morgana:True, Role.mordred:False,
+                Role.merlin:True, Role.percival:False, Role.lover:False, Role.assassin:False, Role.morgana:True, Role.mordred:True, Role.oberon: False, Role.owain:False, Role.guardian_angel: True,
         }
 
 # --- build sample room ----
